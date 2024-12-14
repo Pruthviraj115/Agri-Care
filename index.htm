@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agricare</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 text-gray-800" style="background-image: url(image.png); background-repeat: no-repeat; background-size: cover;
+    background-position: center;" >
+
+    <!-- Login Page -->
+    <div id="login-page" class="flex items-center justify-center h-screen bg-green-100">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h1 class="text-2xl font-bold text-center mb-6">Welcome to Agricare</h1>
+            <form id="login-form" action="javascript:void(0);">
+                <label for="login-username" class="block text-sm font-medium mb-2">Username</label>
+                <input type="text" id="login-username" class="w-full mb-4 p-2 border rounded" placeholder="Enter Username">
+                <label for="login-password" class="block text-sm font-medium mb-2">Password</label>
+                <input type="password" id="login-password" class="w-full mb-4 p-2 border rounded" placeholder="Enter Password">
+                <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded w-full hover:bg-green-700">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="hidden flex h-screen">
+        <!-- Sidebar Menu -->
+        <div class="bg-green-600 text-white w-64 flex flex-col justify-between">
+            <div class="p-4">
+               
+                <div class="text-center text-sm mt-4 text-gray-300">
+                    
+                </div>
+            </div>
+            
+            <!-- User InfoSection -->
+            <div class="flex flex-col items-center py-6">
+                <h2 style="color:rgb(252, 252, 252); padding: 0px 4px 0px 0px;font-style:bold; padding-bottom: 10px;">
+                    AgriCare
+                 </h2>
+                <img src="https://via.placeholder.com/80" alt="User Avatar" class="rounded-full mb-4">
+                <p id="user-name" class="font-semibold text-lg">User Name</p>
+            </div>
+
+            <!--MenuSection-->
+            <ul class="space-y-4 px-4">
+                <li><a href="javascript:void(0)" id="notifications-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Notifications</a></li>
+                <li><a href="javascript:void(0)" id="weather-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Weather</a></li>
+                <li><a href="javascript:void(0)" id="temperature-monitor-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Temperature Indicator</a></li>
+                <li><a href="javascript:void(0)" id="soil-testing-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Soil Testing Results</a></li>
+                <li><a href="javascript:void(0)" id="rainwater-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Rainwater Storage Indicator</a></li>
+                <li><a href="javascript:void(0)" id="solar-power-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Solar Power Indicator</a></li>
+                <li><a href="javascript:void(0)" id="irrigation-controls-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Irrigation Controls</a></li>
+                <li><a href="javascript:void(0)" id="water-saved-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Saved Water</a></li>
+                <li><a href="javascript:void(0)" id="track-record-link" class="sidebar-link block py-2 px-4 rounded hover:bg-green-700">Track Record</a></li>
+            </ul>
+
+            <!--LogoutSection-->
+            <div class="p-4">
+                <button id="logout-button" class="w-full bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600">Logout</button>
+            </div>
+            <b><hr></b>
+            <div class="text-center text-sm mt-4 text-gray-300">
+                © 2024 Agricare. All rights reserved.
+                for more contact info,
+                email:agricare@gmail.com
+                Contact NO: 080-8726323
+
+                <script>
+                 
+                </script>
+            </div>
+            
+        </div>
+
+        <!--MainContent-->
+        <div class="flex-1 p-6 overflow-y-auto">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-green-800">Agricare</h1>
+                <input type="text" placeholder="Search..." class="p-2 rounded bg-white text-gray-800 w-1/3 shadow-md">
+            </header>
+
+            <!--ContentSections-->
+            <section id="notifications" class="hidden">
+                <h2 class="text-lg font-semibold mb-4">Notifications</h2>
+                <ul id="notifications-list" class="list-disc pl-5 text-sm space-y-2">
+                    <li>System running smoothly.</li>
+                </ul>
+            </section>
+
+            <section id="weather" class="hidden">
+                <h2 class="text-lg font-semibold mb-4">Live Weather Broadcast</h2>
+                <p id="weather-forecast" class="text-sm">Fetching weather data...</p>
+            </section>
+
+            <section id="temperature-monitor" class="hidden">
+                <h2 class="text-lg font-semibold mb-4">Temperature Indicator</h2>
+                <div class="bg-white shadow-lg p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold">Current Temperature</h3>
+                    <p class="text-2xl font-semibold" id="current-temperature">-- °C</p>
+                </div>
+                <button onclick="fetchLiveTemperature()">Get Live Temperature</button>
+
+            </section>
+
+            <section id="soil-testing" class="hidden">
+                <h2 class="text-lg font-semibold mb-4">Soil Testing Results</h2>
+                <div class="bg-white shadow-lg p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold">Soil pH Level</h3>
+                    <p class="text-2xl font-semibold" id="soil-ph">-- pH</p>
+                </div>
+            </section>
+
+            <section id="rainwater" class="hidden">
+                <h2 class="text-lg font-semibold mb-4">Rainwater Storage Indicator</h2>
+                <div class="bg-white shadow-lg p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold">Rainwater Storage Level</h3>
+                    <p class="text-2xl font-semibold" id="rainwater-storage">--%</p>
+                </div>
+            </section>
+
+            <section id="solar-power" class="hidden">
+                <div class="container mx-auto py-10">
+                    <h1 class="text-3xl font-bold text-center text-green-600 mb-8">Solar Radiation Monitor</h1>
+                    
+                    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+                        <h2 class="text-xl font-semibold mb-4">Solar Radiation</h2>
+                        <p id="solar-radiation" class="text-2xl font-bold text-green-600">-- W/m²</p>
+                        <button onclick="loadSolarRadiation()" class="mt-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700">
+                            Load Data
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+
+                <section id="irrigation-controls" class="hidden">
+                    <h2 class="text-lg font-semibold mb-4">Irrigation Controls</h2>
+                    <form id="irrigation-form">
+                        <label for="irrigation-level" class="block text-sm font-medium mb-2">Set Irrigation Level (%)</label>
+                        <input type="range" id="irrigation-level" name="irrigation-level" min="0" max="100" class="w-full mb-4">
+                        <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">Apply</button>
+                    </form>
+                
+                    <div class="bg-white shadow-lg p-6 rounded-lg mt-6">
+                        <h3 class="text-lg font-semibold">Irrigation Information</h3>
+                        <p class="text-xl font-semibold" id="irrigation-level-display">Irrigation Level: -- %</p>
+                        <p class="text-xl font-semibold" id="water-flow-rate-display">Water Flow Rate: -- L/min</p>
+                        <p class="text-xl font-semibold" id="irrigation-duration-display">Irrigation Duration: -- min</p>
+                    </div>
+                </section>
+                <section id="saved-water" class="hidden">
+                    <h2 class="text-lg font-semibold mb-4">Saved Water</h2>
+                    <form id="saved-water-form">
+                        <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">Get Saved Water Percentage</button>
+                    </form>
+                
+                    <div class="bg-white shadow-lg p-6 rounded-lg mt-6">
+                        <h3 class="text-lg font-semibold">Water Saved Percentage</h3>
+                        <p class="text-xl font-semibold" id="saved-water-percentage-display">Water Saved: -- %</p>
+                    </div>
+                </section>
+                
+                
+                
+                
+            <section id="track-record" class="hidden">
+                <h2 class="text-lg font-semibold mb-4">Track Record</h2>
+                <div id="track-record-list" class="text-sm">
+                    <p>Loading track record...</p>
+                </div>
+            </section>
+ <script>
+
+    // JavaScript Code for Sidebar Functionality
+    document.getElementById('login-form').addEventListener('submit', function () {
+        // Get the username from the login form
+        const username = document.getElementById('login-username').value;
+
+        // Set the username in the sidebar
+        document.getElementById('user-name').innerText = username;
+
+        // Hide the login page and show the main app
+        document.getElementById('login-page').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+    });
+
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+    const sections = document.querySelectorAll('section');
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            sections.forEach(section => section.classList.add('hidden'));
+            document.getElementById(link.id.replace('-link', '')).classList.remove('hidden');
+        });
+    });
+
+    document.getElementById('logout-button').addEventListener('click', function () {
+        document.getElementById('login-page').classList.remove('hidden');
+        document.getElementById('main-app').classList.add('hidden');
+    });
+
+
+    
+
+    // Corrected fetchWeather function
+    async function fetchWeather() {
+        const apiKey = 'c970866bbfbb037852e153efb940b68a';
+        const city = 'Hassan,Karnataka';
+
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            document.getElementById('weather-forecast').innerText = `Temperature: ${data.main.temp}°C, Weather: ${data.weather[0].description}`;
+
+            const humidity = data.main.humidity;
+            const windSpeed = data.wind.speed;
+            const pressure = data.main.pressure;
+
+            const extraWeatherInfo = `
+                Humidity: ${humidity}%
+                Wind Speed: ${windSpeed} m/s
+                Pressure: ${pressure} hPa
+            `;
+            document.getElementById('weather-forecast').innerText += ` | ${extraWeatherInfo}`;
+        } catch (error) {
+            document.getElementById('weather-forecast').innerText = 'Failed to fetch weather data.';
+        }
+    }
+    async function fetchLiveTemperature() {
+    const apiKey = 'c970866bbfbb037852e153efb940b68a'; 
+    const city = 'Hassan,Karnataka'; 
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+        const response = await fetch(url);
+
+        // Check if the response status is OK (200-299 range)
+        if (!response.ok) {
+            throw new Error('Unable to fetch data');
+        }
+
+        const data = await response.json();
+
+        // Check if the main data is available (sometimes the API might not return it)
+        if (data.main && data.main.temp) {
+            // Update the temperature display in the "Temperature Indicator" section
+            document.getElementById('current-temperature').innerText = `${data.main.temp} °C`;
+        } else {
+            document.getElementById('current-temperature').innerText = 'Temperature data not available.';
+        }
+    } catch (error) {
+        console.error('Error fetching temperature data:', error);
+        document.getElementById('current-temperature').innerText = 'Failed to fetch temperature data.';
+    }
+}
+
+// Call the function when needed, for example, on page load or when the user requests temperature data
+fetchLiveTemperature();
+
+
+// Function to simulate irrigation data based on environmental conditions
+function generateIrrigationData() {
+    // Simulate environmental conditions
+    const temperature = getTemperature(); 
+    const soilMoisture = getSoilMoisture(); 
+    const rainfall = getRainfall(); 
+    const irrigationLevel = calculateIrrigationLevel(temperature, soilMoisture, rainfall);
+
+    // Generate irrigation details based on the irrigation level
+    const waterFlowRate = generateWaterFlowRate(irrigationLevel);
+    const irrigationDuration = generateIrrigationDuration(irrigationLevel);
+
+    // Update the UI elements
+    document.getElementById('irrigation-level-display').innerText = `Irrigation Level: ${irrigationLevel} %`;
+    document.getElementById('water-flow-rate-display').innerText = `Water Flow Rate: ${waterFlowRate} L/min`;
+    document.getElementById('irrigation-duration-display').innerText = `Irrigation Duration: ${irrigationDuration} min`;
+}
+
+// Simulate temperature (realistic values could be between 10°C and 40°C)
+function getTemperature() {
+    return Math.random() * (40 - 10) + 10; // Random temperature between 10°C and 40°C
+}
+
+// Simulate soil moisture (0-100%)
+function getSoilMoisture() {
+    return Math.random() * 100;
+}
+
+// Simulate rainfall (mm per day, between 0 and 50 mm)
+function getRainfall() {
+    return Math.random() * 50; 
+}
+
+// Calculate irrigation level based on environmental factors
+function calculateIrrigationLevel(temperature, soilMoisture, rainfall) {
+    let irrigationLevel = 50; 
+
+    // Adjust irrigation level based on temperature
+    if (temperature > 30) {
+        irrigationLevel += 30; 
+    } else if (temperature < 15) {
+        irrigationLevel -= 20;
+    }
+
+    // Adjust based on soil moisture
+    if (soilMoisture < 30) {
+        irrigationLevel += 20; 
+    } else if (soilMoisture > 70) {
+        irrigationLevel -= 20; 
+    }
+
+    // Adjust based on rainfall
+    if (rainfall > 20) {
+        irrigationLevel -= 30; 
+    } else if (rainfall < 5) {
+        irrigationLevel += 20; 
+    }
+
+    // Ensure irrigation level stays between 0 and 100
+    return Math.max(0, Math.min(100, irrigationLevel));
+}
+
+// Generate a random water flow rate based on the irrigation level (0-100%)
+function generateWaterFlowRate(irrigationLevel) {
+    return Math.random() * (10 + irrigationLevel / 10); 
+}
+
+// Generate a random irrigation duration based on irrigation level (0-100%)
+function generateIrrigationDuration(irrigationLevel) {
+    return Math.floor(Math.random() * (irrigationLevel) + 10);
+}
+
+// Simulate form submission and show results
+document.getElementById('irrigation-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    generateIrrigationData();
+});
+
+    
+
+
+    
+    // Random generation for soil testing results when 'Soil Testing Results' section is shown
+    document.getElementById('soil-testing-link').addEventListener('click', function () {
+        // Generate random pH value between 4.0 and 8.0 (typical pH range for most soils)
+        const randomSoilPh = (Math.random() * (8.0 - 4.0) + 4.0).toFixed(1);
+
+        // Generate random moisture level between 0% and 100% (soil moisture content)
+        const randomSoilMoisture = Math.floor(Math.random() * 101); 
+
+        
+        const randomNitrogen = Math.floor(Math.random() * 101);
+
+         
+        const randomPhosphorus = Math.floor(Math.random() * 101);
+
+    
+        const randomPotassium = Math.floor(Math.random() * 101);
+
+       
+        document.getElementById('soil-ph').innerText = `Soil pH: ${randomSoilPh}`;
+        document.getElementById('soil-moisture').innerText = `Soil Moisture: ${randomSoilMoisture}%`;
+        document.getElementById('nitrogen-content').innerText = `Nitrogen: ${randomNitrogen} ppm`;
+        document.getElementById('phosphorus-content').innerText = `Phosphorus: ${randomPhosphorus} ppm`;
+        document.getElementById('potassium-content').innerText = `Potassium: ${randomPotassium} ppm`;
+    });
+
+
+  
+    document.getElementById('weather-link').addEventListener('click', fetchWeather);
+
+    
+   
+   
+    document.getElementById('solar-power-link').addEventListener('click', function () {
+        // Generate random solar irradiance between 100 and 1000 (in W/m²)
+        const randomSolarIrradiance = (Math.random() * (1000 - 100) + 100).toFixed(1);
+
+        // Generate random solar panel output between 0 and 5000 (in watts)
+        const randomSolarOutput = Math.floor(Math.random() * 5001); 
+
+        // Generate random battery charge level between 0% and 100%
+        const randomBatteryCharge = Math.floor(Math.random() * 101);
+
+        // Display the generated values for solar irradiance, output, and battery charge
+        document.getElementById('solar-irradiance').innerText = `Solar Irradiance: ${randomSolarIrradiance} W/m²`;
+        document.getElementById('solar-output').innerText = `Solar Panel Output: ${randomSolarOutput} W`;
+        document.getElementById('battery-charge').innerText = `Battery Charge Level: ${randomBatteryCharge}%`;
+    });
+
+    document.getElementById('irrigation-controls-link').addEventListener('click', function () {
+        // Generate a random irrigation level between 0% and 100%
+        const randomIrrigationLevel = Math.floor(Math.random() * 101); 
+
+        // Generate a random water flow rate between 0 and 50 liters per minute
+        const randomWaterFlowRate = (Math.random() * 50).toFixed(1); 
+
+        // Generate a random irrigation duration between 5 and 120 minutes
+        const randomIrrigationDuration = Math.floor(Math.random() * (120 - 5 + 1) + 5); 
+
+        // Display the generated values for irrigation control
+        document.getElementById('irrigation-level-display').innerText = `Irrigation Level: ${randomIrrigationLevel}%`;
+        document.getElementById('water-flow-rate-display').innerText = `Water Flow Rate: ${randomWaterFlowRate} L/min`;
+        document.getElementById('irrigation-duration-display').innerText = `Irrigation Duration: ${randomIrrigationDuration} min`;
+    });
+    
+
+   
+    // Add the irrigation form submit handler to display success message
+    document.getElementById('irrigation-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent form submission that causes page reload
+        // Display a success message
+        alert("Changes applied successfully");
+    });
+    
+    // Random generation for rainwater storage level when 'Rainwater Storage Indicator' section is shown
+    document.getElementById('rainwater-link').addEventListener('click', function () {
+        // Generate random rainwater storage percentage (between 0% and 100%)
+        const randomRainwaterStoragePercentage = Math.floor(Math.random() * 101); 
+
+        // Generate random rainwater volume in liters (between 0 and 5000 liters)
+        const randomRainwaterVolume = Math.floor(Math.random() * 5001); 
+
+        // Display the generated values
+        document.getElementById('rainwater-storage').innerText = `Storage Level: ${randomRainwaterStoragePercentage}% | Volume: ${randomRainwaterVolume} L`;
+    });
+    async function logParameterChange(parameter, value) {
+    const data = {
+        parameter: parameter,
+        value: value,
+        timestamp: new Date().toISOString()
+    };
+
+    try {
+        const response = await fetch('/log-parameter-change', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            console.log("Parameter change logged successfully");
+        } else {
+            console.error("Failed to log parameter change");
+        }
+    } catch (error) {
+        console.error("Error logging parameter change:", error);
+    }
+}
+// Function to generate and display random solar radiation value
+function loadSolarRadiation() {
+    // Generate a random value for solar radiation between 100 and 1000 W/m²
+    const solarRadiation = getRandomSolarRadiation();
+
+    // Update the display with the generated solar radiation value
+    document.getElementById('solar-radiation').innerText = `${solarRadiation} W/m²`;
+}
+
+// Function to generate a random solar radiation value between 100 W/m² and 1000 W/m²
+function getRandomSolarRadiation() {
+    const minRadiation = 100;  // Minimum solar radiation (W/m²)
+    const maxRadiation = 1000; // Maximum solar radiation (W/m²)
+
+    // Generate a random value between min and max
+    return (Math.random() * (maxRadiation - minRadiation) + minRadiation).toFixed(2); // Random value rounded to 2 decimal places
+}
+
+// Function to generate random saved water data based on environmental conditions
+function generateSavedWaterData() {
+    const temperature = getTemperature();  // Temperature in °C
+    const irrigationLevel = getIrrigationLevel();  // Irrigation level in %
+    const rainwaterStorage = getRainwaterStorage();  // Rainwater collected in liters or percentage
+
+    // Calculate saved water based on these factors
+    const savedWater = calculateSavedWater(temperature, irrigationLevel, rainwaterStorage);
+
+    // Update the UI with generated saved water data
+    document.getElementById('saved-water-display').innerText = `Saved Water: ${savedWater} Liters`;
+}
+
+
+// Calculate saved water based on temperature, irrigation level, and rainwater storage
+function calculateSavedWater(temperature, irrigationLevel, rainwaterStorage) {
+    let savedWater = 0;
+
+    // Factor in irrigation level
+    savedWater += (irrigationLevel / 100) * 500;  // Simulating that higher irrigation levels save more water
+
+    // Factor in rainwater storage
+    savedWater += rainwaterStorage * 0.2;  // Simulating the amount of rainwater saved
+
+    // Factor in temperature (higher temp may require more water)
+    if (temperature > 30) {
+        savedWater -= (temperature - 30) * 10;  // More water is used in high temperatures
+    }
+
+    // Ensure that saved water doesn't go below 0
+    savedWater = Math.max(0, savedWater);
+
+    return savedWater.toFixed(2);  // Return saved water in liters
+}
+
+// Simulate form submission and show saved water data
+document.getElementById('saved-water-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    generateSavedWaterData();
+});
+// Function to generate random saved water data based on environmental conditions
+function generateSavedWaterData() {
+    // Get simulated data
+    const temperature = getTemperature();  // Simulated temperature in °C
+    const irrigationLevel = getIrrigationLevel();  // Simulated irrigation level in percentage
+    const rainwaterStorage = getRainwaterStorage();  // Simulated rainwater storage in liters
+
+    // Calculate saved water based on these factors
+    const savedWater = calculateSavedWater(temperature, irrigationLevel, rainwaterStorage);
+
+    // Update the UI with the calculated saved water data
+    document.getElementById('saved-water-display').innerText = `Saved Water: ${savedWater} Liters`;
+}
+
+// Simulate temperature between 10°C to 40°C
+function getTemperature() {
+    return (Math.random() * (40 - 10) + 10).toFixed(2);  // Random temperature between 10°C and 40°C
+}
+
+// Simulate irrigation level (0% to 100%)
+function getIrrigationLevel() {
+    return (Math.random() * 100).toFixed(2);  // Random irrigation level between 0% and 100%
+}
+
+// Simulate rainwater storage in liters (0 to 1000 liters)
+function getRainwaterStorage() {
+    return (Math.random() * 1000).toFixed(2);  // Random rainwater storage in liters
+}
+
+// Calculate saved water based on temperature, irrigation level, and rainwater storage
+
+
+// Function to generate random saved water data based on environmental conditions
+function generateSavedWaterData() {
+    // Get simulated data
+    const temperature = getTemperature();  // Simulated temperature in °C
+    const irrigationLevel = getIrrigationLevel();  // Simulated irrigation level in percentage
+    const rainwaterStorage = getRainwaterStorage();  // Simulated rainwater storage in liters
+
+    // Calculate saved water based on these factors
+    const savedWater = calculateSavedWater(temperature, irrigationLevel, rainwaterStorage);
+
+    // Update the UI with the calculated saved water data
+    document.getElementById('saved-water-display').innerText = `Saved Water: ${savedWater} Liters`;
+}
+
+// Simulate temperature between 10°C to 40°C
+function getTemperature() {
+    return (Math.random() * (40 - 10) + 10).toFixed(2);  // Random temperature between 10°C and 40°C
+}
+
+// Simulate irrigation level (0% to 100%)
+function getIrrigationLevel() {
+    return (Math.random() * 100).toFixed(2);  // Random irrigation level between 0% and 100%
+}
+
+// Simulate rainwater storage in liters (0 to 1000 liters)
+function getRainwaterStorage() {
+    return (Math.random() * 1000).toFixed(2);  // Random rainwater storage in liters
+}
+
+// Calculate saved water based on temperature, irrigation level, and rainwater storage
+// Function to generate random saved water data based on environmental conditions
+function generateSavedWaterData() {
+    // Get simulated data
+    const temperature = getTemperature();  // Simulated temperature in °C
+    const irrigationLevel = getIrrigationLevel();  // Simulated irrigation level in percentage
+    const rainwaterStorage = getRainwaterStorage();  // Simulated rainwater storage in liters
+
+    // Calculate saved water (in liters) based on these factors
+    const savedWater = calculateSavedWater(temperature, irrigationLevel, rainwaterStorage);
+
+    // Calculate the total potential water usage (for example, 5000 Liters could be total water required for irrigation)
+    const totalWaterUsage = 5000;  // Assumed total water usage (you can change it as needed)
+
+    // Calculate the percentage of water saved
+    const savedWaterPercentage = ((savedWater / totalWaterUsage) * 100).toFixed(2);
+
+    // Update the UI with the calculated saved water percentage
+    document.getElementById('saved-water-percentage-display').innerText = `Water Saved: ${savedWaterPercentage} %`;
+}
+
+// Simulate temperature between 10°C to 40°C
+function getTemperature() {
+    return (Math.random() * (40 - 10) + 10).toFixed(2);  // Random temperature between 10°C and 40°C
+}
+
+// Simulate irrigation level (0% to 100%)
+function getIrrigationLevel() {
+    return (Math.random() * 100).toFixed(2);  // Random irrigation level between 0% and 100%
+}
+
+// Simulate rainwater storage in liters (0 to 1000 liters)
+function getRainwaterStorage() {
+    return (Math.random() * 1000).toFixed(2);  // Random rainwater storage in liters
+}
+
+// Calculate saved water based on temperature, irrigation level, and rainwater storage
+function calculateSavedWater(temperature, irrigationLevel, rainwaterStorage) {
+    let savedWater = 0;
+
+    // Factor in irrigation level (more irrigation leads to more saved water)
+    savedWater += (irrigationLevel / 100) * 500;  // Simulate that higher irrigation levels save more water
+
+    // Factor in rainwater storage (more rainwater means more saved water)
+    savedWater += rainwaterStorage * 0.2;  // Simulate that rainwater contributes to saved water
+
+    // Temperature penalty (higher temperatures might cause more water usage)
+    if (temperature > 30) {
+        savedWater -= (temperature - 30) * 10;  // More water usage at higher temperatures
+    }
+
+    // Ensure that saved water doesn't go negative
+    savedWater = Math.max(0, savedWater);
+
+    return savedWater.toFixed(2);  // Return saved water in liters, rounded to 2 decimal places
+}
+
+// Event listener for the "Get Saved Water Percentage" button
+document.getElementById('saved-water-form').addEventListener('submit', function(event) {
+    event.preventDefault();  // Prevent form submission to the server
+    generateSavedWaterData();  // Generate and display saved water percentage data
+});
+
+
+
+
+// Endpoint to log parameter changes
+function generateRandomTrackRecord() {
+            const parameters = ["Irrigation Level", "Soil pH", "Rainwater Level", "Solar Power", "Temperature"];
+            const randomParameter = parameters[Math.floor(Math.random() * parameters.length)];
+            const randomValue = (Math.random() * 100).toFixed(2);  // Random value between 0-100
+
+            return `Parameter: ${randomParameter}, Value: ${randomValue}% | Timestamp: ${new Date().toLocaleString()}`;
+        }
+
+        // Populate the track record section with random records
+        function loadTrackRecords() {
+            const trackRecordList = document.getElementById('track-record-list');
+            trackRecordList.innerHTML = '';  // Clear existing records
+
+            // Generate and display 5 random track records
+            for (let i = 0; i < 5; i++) {
+                const record = document.createElement('p');
+                record.innerText = generateRandomTrackRecord();
+                trackRecordList.appendChild(record);
+            }
+        }
+
+        // Trigger load track records when the "Track Record" section is shown
+        document.getElementById('track-record-link').addEventListener('click', loadTrackRecords);
+
+
+</script>
+
+</body>
+</html>
